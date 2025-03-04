@@ -11,10 +11,14 @@ cd ai-bots-2025tht
 2. Initialize and activate virtual environment
 ```bash
 python -m venv .venv
+# On Windows
+.venv\Scripts\activate
+# On Unix or MacOS
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
-
 3. Set up MongoDB
 ```bash
 docker pull mongo
@@ -27,5 +31,17 @@ docker run -d --name i-love-mongo \
 
 4. Run FastAPI server
 ```bash
-uvicorn main:app --reload
+fastapi dev main.py
+```
+
+## Testing
+
+Run the test suite:
+```bash
+pytest
+```
+
+For specific test files:
+```bash
+pytest tests/test_agents.py -v
 ```
