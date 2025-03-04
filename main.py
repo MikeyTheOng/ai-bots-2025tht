@@ -1,3 +1,4 @@
+from api.routes.agents import router as agents_router
 from contextlib import asynccontextmanager
 from db.init_db import init_mongodb
 from fastapi import FastAPI
@@ -25,6 +26,8 @@ async def lifespan(app: FastAPI):
         app.mongodb_client.close()
 
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(agents_router)
 
 @app.get("/")
 def read_root():
