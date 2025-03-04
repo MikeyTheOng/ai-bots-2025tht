@@ -1,5 +1,4 @@
 import json
-import pytest
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 from bson import ObjectId
@@ -123,3 +122,31 @@ def test_get_agent_validation_error():
         assert "Validation error" in response.json()["detail"]
         
         mock_get.assert_called_once_with(agent_id)
+
+def test_delete_agent_success():
+    """Test successful agent deletion"""
+    agent_id = "507f1f77bcf86cd799439011"
+    
+    with patch("api.routes.agents.delete_agent") as mock_delete:
+        mock_delete.return_value = None
+        
+        response = client.delete(f"/agents/{agent_id}")
+        
+        assert response.status_code == 204
+        assert response.content == b''
+        
+        mock_delete.assert_called_once_with(agent_id)
+
+def test_delete_agent_validation_error():
+    """Test validation error handling during deletion"""
+    agent_id = "invalid-id"
+    
+    with patch("api.routes.agents.delete_agent") as mock_delete:
+        mock_delete.side_effect = ValueError("Invalid agent ID format")
+        
+        response = client.delete(f"/agents/{agent_id}")
+        
+        assert response.status_code == 422
+        assert "Validation error" in response.json()["detail"]
+        
+        mock_delete.assert_called_once_with(agent_id)
