@@ -1,9 +1,8 @@
+from db.agents import create_agent, get_agent
 from fastapi import APIRouter, Form, HTTPException
+from models.agents import AgentDB, CreateAgent
 from typing import Dict
 import json
-
-from db.agents import create_agent
-from models.agents import CreateAgent
 
 router = APIRouter()
 
@@ -31,3 +30,28 @@ async def create_agent_route(
         raise HTTPException(status_code=422, detail=f"Invalid agent data: {str(e)}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error creating agent: {str(e)}")
+    
+@router.get("/agents/{agent_id}", status_code=200, response_model=AgentDB)
+async def get_agent_route(
+    agent_id: str,
+):
+    """
+    Get a research agent by ID
+
+    Args:
+        agent_id: ID of the agent to retrieve
+
+    Returns:
+        Agent details
+    """
+    try:
+        agent = await get_agent(agent_id)
+        if not agent:
+            return AgentDB(name="")
+        return agent
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
