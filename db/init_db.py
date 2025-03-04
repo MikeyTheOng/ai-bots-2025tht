@@ -4,7 +4,7 @@ from typing import Optional
 from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 
-from db.models.user import UserDB
+from models.agents import AgentDB
 
 async def init_mongodb(db_url: Optional[str] = None):
     """
@@ -19,7 +19,7 @@ async def init_mongodb(db_url: Optional[str] = None):
     await init_beanie(
         database=client["i-love-mongo"],
         document_models=[
-            UserDB,
+            AgentDB,
         ]
     )
     
