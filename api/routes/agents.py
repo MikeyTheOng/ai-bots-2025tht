@@ -1,4 +1,4 @@
-from db.agents import create_agent, get_agent
+from db.agents import create_agent, delete_agent, get_agent
 from fastapi import APIRouter, Form, HTTPException
 from models.agents import AgentDB, CreateAgent
 from typing import Dict
@@ -49,6 +49,26 @@ async def get_agent_route(
         if not agent:
             return AgentDB(name="")
         return agent
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
+
+@router.delete("/agents/{agent_id}", status_code=204)
+async def delete_agent_route(
+    agent_id: str,
+):
+    """
+    Delete a research agent by ID
+    Args:
+        agent_id: ID of the agent to delete
+    Returns:
+        None
+    """
+    try:
+        await delete_agent(agent_id)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
     except HTTPException:
