@@ -7,6 +7,11 @@ from bson import ObjectId
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from models.agents import AgentDB
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from main import app
 
 client = TestClient(app)
@@ -17,7 +22,7 @@ def test_create_agent_success():
     
     with patch("api.routes.agents.create_agent") as mock_create:
         mock_agent = MagicMock()
-        mock_agent.id = ObjectId("507f1f77bcf86cd799439011")
+        mock_agent._id = ObjectId("507f1f77bcf86cd799439011")
         mock_create.return_value = mock_agent
         
         response = client.post(
@@ -68,3 +73,54 @@ def test_create_agent_database_error():
         
         assert response.status_code == 500
         assert "Error creating agent" in response.json()["detail"]
+
+def test_get_agent_success():
+    """Test successful agent retrieval"""
+    agent_id = "507f1f77bcf86cd799439011"
+    
+    with patch("api.routes.agents.get_agent") as mock_get:
+        mock_agent = MagicMock()
+        mock_agent._id = ObjectId(agent_id)
+        mock_agent.name = "Test Agent"
+        mock_agent.revision_id = "12345678-1234-5678-1234-567812345678"  # Needs to be included as fastAPI validates the mock_agent created via MagicMock against AgentDB model
+        mock_get.return_value = mock_agent
+        
+        response = client.get(f"/agents/{agent_id}")
+        
+        assert response.status_code == 200
+        assert response.json()["name"] == "Test Agent"
+        assert "_id" in response.json()
+        
+        mock_get.assert_called_once_with(agent_id)
+
+def test_get_agent_not_found():
+    """Test agent not found case"""
+    agent_id = "507f1f77bcf86cd799439011"
+    
+    with patch("api.routes.agents.get_agent") as mock_get:
+        mock_null_agent = MagicMock()
+        mock_null_agent._id = None
+        mock_null_agent.name = ""
+        mock_null_agent.revision_id = "12345678-1234-5678-1234-567812345678"
+        mock_get.return_value = mock_null_agent
+        
+        response = client.get(f"/agents/{agent_id}")
+        assert response.status_code == 200
+        assert response.json()["name"] == ""
+        assert response.json()["_id"] is None
+        
+        mock_get.assert_called_once_with(agent_id)
+
+def test_get_agent_validation_error():
+    """Test validation error handling"""
+    agent_id = "invalid-id"
+    
+    with patch("api.routes.agents.get_agent") as mock_get:
+        mock_get.side_effect = ValueError("Invalid agent ID format")
+        
+        response = client.get(f"/agents/{agent_id}")
+        
+        assert response.status_code == 422
+        assert "Validation error" in response.json()["detail"]
+        
+        mock_get.assert_called_once_with(agent_id)
