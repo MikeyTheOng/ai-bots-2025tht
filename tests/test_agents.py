@@ -29,7 +29,6 @@ def test_create_agent_success():
             "/agents",
             data={"agent_post": json.dumps(test_data)}
         )
-        print("Response:", response.json())
 
         assert response.status_code == 201
         assert "agent_id" in response.json()
