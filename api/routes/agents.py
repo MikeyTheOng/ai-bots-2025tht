@@ -103,10 +103,9 @@ async def send_message_route(
         # agent = await get_agent(agent_id)
 
         results = langgraph_setup.research(message.message)
-
-        print("Results:", results)
         # TODO: Store messages in AgentDB
-        return results
+        
+        return results[-1] if results else {"role": "assistant", "content": "No response generated."}
         
     except ValueError as e:
         raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
