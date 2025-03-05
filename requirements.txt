@@ -7,6 +7,7 @@ charset-normalizer==3.4.1
 click==8.1.8
 distro==1.9.0
 dnspython==2.7.0
+duckduckgo_search==7.5.0
 email_validator==2.2.0
 fastapi==0.115.11
 fastapi-cli==0.0.7
@@ -28,6 +29,7 @@ langgraph-prebuilt==0.1.1
 langgraph-sdk==0.1.53
 langsmith==0.3.11
 lazy-model==0.2.0
+lxml==5.3.1
 markdown-it-py==3.0.0
 MarkupSafe==3.0.2
 mdurl==0.1.2
@@ -37,6 +39,7 @@ openai==1.65.3
 orjson==3.10.15
 packaging==24.2
 pluggy==1.5.0
+primp==0.14.0
 pydantic==2.10.6
 pydantic_core==2.27.2
 Pygments==2.19.1

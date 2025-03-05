@@ -1,3 +1,4 @@
+from duckduckgo_search import DDGS
 from langchain_core.tools import tool
 import wikipedia
 
@@ -56,5 +57,97 @@ def get_info_from_wikipedia(topic: str) -> dict:
             "query": topic,
             "message": f"Error retrieving information: {str(e)}"
         }
+        
+@tool
+def search_web_with_duckduckgo(query: str, max_results: int = 5) -> dict:
+    """
+    Perform a general web search using DuckDuckGo to find webpages, documents, and information.
+    Use this for finding general information, documentation, and websites about a topic.
+    
+    Args:
+        query: The search query for finding general web content
+        max_results: Maximum number of results to return (default: 5)
+        
+    Returns:
+        A dictionary containing general web search results or error information
+    """
+    try:
+        ddgs = DDGS()
+        results = ddgs.text(
+            keywords=query,
+            region="wt-wt",
+            safesearch="moderate",
+            max_results=max_results
+        )
+        
+        formatted_results = []
+        for result in results:
+            formatted_results.append({
+                "title": result.get("title", "No title"),
+                "body": result.get("body", "No body text"),
+                "href": result.get("href", "No URL")
+            })
+        
+        return {
+            "status": "success",
+            "query": query,
+            "results": formatted_results
+        }
+    
+    except Exception as e:
+        return {
+            "status": "error",
+            "query": query,
+            "message": f"Error performing search: {str(e)}"
+        }
 
-tools = [get_info_from_wikipedia]
+@tool
+def search_duckduckgo_news(query: str, max_results: int = 5, time_period: str = None) -> dict:
+    """
+    Search for news articles using DuckDuckGo News.
+    
+    Args:
+        query: The search query for news articles
+        max_results: Maximum number of results to return (default: 5)
+        time_period: Time period for news search (d = day, w = week, m = month, None = all time)
+        
+    Returns:
+        A dictionary containing news search results or error information
+    """
+    try:
+        ddgs = DDGS()
+        results = ddgs.news(
+            keywords=query,
+            region="wt-wt",
+            safesearch="moderate",
+            timelimit=time_period,
+            max_results=max_results
+        )
+        
+        formatted_results = []
+        for result in results:
+            formatted_results.append({
+                "title": result.get("title", "No title"),
+                "body": result.get("body", "No body text"),
+                "url": result.get("url", "No URL"),
+                "date": result.get("date", "No date"),
+                "source": result.get("source", "Unknown source"),
+                "image": result.get("image", None)
+            })
+        
+        return {
+            "status": "success",
+            "query": query,
+            "time_period": time_period if time_period else "all time",
+            "results": formatted_results
+        }
+    
+    except Exception as e:
+        return {
+            "status": "error",
+            "query": query,
+            "message": f"Error performing news search: {str(e)}"
+        }
+
+
+tools = [get_info_from_wikipedia, search_web_with_duckduckgo, search_duckduckgo_news]
