@@ -14,9 +14,13 @@ graph = create_react_agent(model, tools=tools, prompt=system_prompt, name="resea
 # TODO: Get name from db
 # TODO: Adjust response format
 
-def _extract_message_content(message: BaseMessage) -> dict:
+def _extract_message_content(message: BaseMessage, truncate=True) -> dict:
     """
     Extracts role and content from a LangChain message object.
+    
+    Args:
+        message: The message to extract content from
+        truncate: Whether to truncate log messages (default: True)
     """
     result = {"role": message.type, "content": message.content}
     
@@ -29,17 +33,24 @@ def _extract_message_content(message: BaseMessage) -> dict:
                     "arguments": tc["function"]["arguments"]
                 } for tc in tool_calls]
     
-    _log_message(message)
+    _log_message(message, truncate=truncate)
     return result
 
-def _log_message(message):
+def _log_message(message, truncate=True):
     """
     Logs a message in a clean, readable format based on its type.
+    
+    Args:
+        message: The message object to log
+        truncate: Whether to truncate long content (default: True)
     """
     message_type = message.type.upper() if hasattr(message, 'type') else 'UNKNOWN'
     
     if hasattr(message, "content") and message.content:
-        preview = message.content[:100] + ('...' if len(message.content) > 100 else '')
+        if truncate:
+            preview = message.content[:100] + ('...' if len(message.content) > 100 else '')
+        else:
+            preview = message.content
         print(f"\n[{message_type}]: {preview}")
     
     elif hasattr(message, "additional_kwargs") and "tool_calls" in message.additional_kwargs:
@@ -67,7 +78,7 @@ def research(user_input):
     print("\n--- Starting Research Process ---")
     for s in graph.stream(formatted_input, stream_mode="values"):
         message = s["messages"][-1]
-        results.append(_extract_message_content(message))
+        results.append(_extract_message_content(message, False))
     
     print("\n--- Research Complete ---\n")
     return results if results else [{"role": "assistant", "content": "No response generated."}]
