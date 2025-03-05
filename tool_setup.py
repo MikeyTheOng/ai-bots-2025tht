@@ -3,7 +3,7 @@ from langchain_core.tools import tool
 import wikipedia
 
 @tool
-def get_info_from_wikipedia(topic: str) -> dict:
+def search_wikipedia(topic: str) -> dict:
     """
     Get information about a topic from Wikipedia.
     
@@ -150,4 +150,4 @@ def search_duckduckgo_news(query: str, max_results: int = 5, time_period: str = 
         }
 
 
-tools = [get_info_from_wikipedia, search_web_with_duckduckgo, search_duckduckgo_news]
+tools = [search_wikipedia, search_web_with_duckduckgo, search_duckduckgo_news]
