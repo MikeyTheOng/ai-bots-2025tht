@@ -1,8 +1,10 @@
-from db.agents import create_agent, delete_agent, get_agent
 from fastapi import APIRouter, Form, HTTPException
-from models.agents import AgentDB, CreateAgent
-from typing import Dict
 import json
+from db.agents import create_agent, delete_agent, get_agent
+from langgraph_setup import research
+from models.agents import AgentDB, CreateAgent
+from models.messages import Message
+from typing import Dict
 
 router = APIRouter()
 
@@ -75,3 +77,33 @@ async def delete_agent_route(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
+    
+@router.post("/agents/{agent_id}/queries", status_code=201)
+async def send_message_route(
+    agent_id: str,
+    message: Message
+):
+    """
+    Sends a user prompt to the Research Agent and returns the research conducted
+    
+    Args:
+        agent_id: ID of the agent to send the message to
+        message: Message containing the user prompt
+        
+    Returns:
+        Research results
+    """
+    try:
+        # agent = await get_agent(agent_id)
+
+        results = research(message.message)
+        print("Results:", results)
+        # TODO: Store messages in AgentDB
+        return results
+        
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error querying agent: {str(e)}")
