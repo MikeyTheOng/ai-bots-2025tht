@@ -1,16 +1,16 @@
 import json
-from unittest.mock import patch, MagicMock
-from fastapi.testclient import TestClient
 from bson import ObjectId
-
-import sys
+import json
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from models.agents import AgentDB
-
+import pytest
 import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from fastapi.testclient import TestClient
+from unittest.mock import MagicMock, patch
+
+parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
 from main import app
 
 client = TestClient(app)
@@ -150,3 +150,67 @@ def test_delete_agent_validation_error():
         assert "Validation error" in response.json()["detail"]
         
         mock_delete.assert_called_once_with(agent_id)
+
+class TestAgentQueriesRoute:
+    @pytest.fixture
+    def mock_research_results(self):
+        """Create mock research results"""
+        return [
+            {"role": "user", "content": "What is climate change?"},
+            {"role": "assistant", "content": "Climate change refers to long-term shifts in temperatures and weather patterns. [https://example.org/climate]"}
+        ]
+    
+    @patch("api.routes.agents.langgraph_setup.research")
+    def test_send_message_success(self, mock_research, mock_research_results):
+        """Test successful message sending"""
+        mock_research.return_value = mock_research_results
+        
+        agent_id = str(ObjectId())
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 201
+        
+        mock_research.assert_called_once_with("What is climate change?")
+        
+        assert response.json() == mock_research_results[-1]
+    
+    @patch("api.routes.agents.langgraph_setup.research")
+    def test_send_message_research_error(self, mock_research):
+        """Test handling of research errors"""
+        mock_research.side_effect = Exception("Research error")
+        
+        agent_id = str(ObjectId())
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 500
+        assert "Error querying agent" in response.json()["detail"]
+    
+    @patch("api.routes.agents.langgraph_setup.research")
+    def test_empty_research_results(self, mock_research):
+        """Test handling of empty research results"""
+        mock_research.return_value = []
+        
+        agent_id = str(ObjectId())
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 201
+        assert response.json() == {"role": "assistant", "content": "No response generated."}
+    
+    @patch("api.routes.agents.langgraph_setup.research")
+    def test_validation_error(self, mock_research):
+        """Test handling of validation errors"""
+        mock_research.side_effect = ValueError("Invalid message format")
+        
+        agent_id = str(ObjectId())
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 422
+        assert "Validation error" in response.json()["detail"]
