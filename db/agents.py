@@ -61,3 +61,30 @@ async def delete_agent(agent_id: str):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error deleting agent: {str(e)}")
+    
+async def update_agent_messages(agent_id: str, message: str):
+    """
+    Append agent messages
+    
+    Args:
+        agent_id: ID of the agent to update
+        message: Message to append to agent messages
+        
+    Returns:
+        Updated agent or None if agent doesn't exist
+    """
+    try:
+        if not ObjectId.is_valid(agent_id):
+            raise HTTPException(status_code=422, detail="Invalid agent ID format")
+        
+        agent = await AgentDB.get(agent_id)
+        
+        agent.messages.append(message)
+        
+        await agent.save()
+        
+        return agent
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error updating agent messages: {str(e)}")

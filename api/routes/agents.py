@@ -1,10 +1,18 @@
-from db.agents import create_agent, delete_agent, get_agent
 from fastapi import APIRouter, Form, HTTPException
-from models.agents import AgentDB, CreateAgent
-from typing import Dict
 import json
+from db.agents import create_agent, delete_agent, get_agent, update_agent_messages
+from langgraph_setup import LangGraphSetup
+from llm_setup import LLMSetup
+from models.agents import AgentDB, CreateAgent
+from models.messages import Message
+from tool_setup import ToolSetup
+from typing import Dict
 
 router = APIRouter()
+
+llm_setup = LLMSetup()
+tool_setup = ToolSetup()
+langgraph_setup = LangGraphSetup(llm_setup, tool_setup)
 
 @router.post("/agents", status_code=201, response_model=Dict[str, str])
 async def create_agent_route(
@@ -75,3 +83,36 @@ async def delete_agent_route(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
+    
+@router.post("/agents/{agent_id}/queries", status_code=201)
+async def send_message_route(
+    agent_id: str,
+    message: Message
+):
+    """
+    Sends a user prompt to the Research Agent and returns the research conducted
+    
+    Args:
+        agent_id: ID of the agent to send the message to
+        message: Message containing the user prompt
+        
+    Returns:
+        Research results
+    """
+    try:
+        query = message.message
+        agent = await get_agent(agent_id)
+        if not agent:
+            return {"role": "system", "content": "Agent not found."}
+        
+        await update_agent_messages(agent_id, query)
+        messages = langgraph_setup.research(query)
+            
+        return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
+        
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error querying agent: {str(e)}")
