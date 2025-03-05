@@ -1,12 +1,18 @@
 from fastapi import APIRouter, Form, HTTPException
 import json
 from db.agents import create_agent, delete_agent, get_agent
-from langgraph_setup import research
+from langgraph_setup import LangGraphSetup
+from llm_setup import LLMSetup
 from models.agents import AgentDB, CreateAgent
 from models.messages import Message
+from tool_setup import ToolSetup
 from typing import Dict
 
 router = APIRouter()
+
+llm_setup = LLMSetup()
+tool_setup = ToolSetup()
+langgraph_setup = LangGraphSetup(llm_setup, tool_setup)
 
 @router.post("/agents", status_code=201, response_model=Dict[str, str])
 async def create_agent_route(
@@ -96,7 +102,8 @@ async def send_message_route(
     try:
         # agent = await get_agent(agent_id)
 
-        results = research(message.message)
+        results = langgraph_setup.research(message.message)
+
         print("Results:", results)
         # TODO: Store messages in AgentDB
         return results
