@@ -19,8 +19,6 @@ Make sure your answers properly cite information from PubMed, Arxiv, Wikipedia, 
 """
 
 graph = create_react_agent(model, tools=tools, prompt=system_prompt, name="research_agent")
-# TODO: Get name from db
-# TODO: Adjust response format
 
 def _extract_message_content(message: BaseMessage, truncate=True) -> dict:
     """
@@ -84,6 +82,7 @@ def research(user_input):
     results = []
     
     print("\n--- Starting Research Process ---")
+    
     for s in graph.stream(formatted_input, stream_mode="values"):
         message = s["messages"][-1]
         results.append(_extract_message_content(message, False))
