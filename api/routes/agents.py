@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException
 import json
-from db.agents import create_agent, delete_agent, get_agent
+from db.agents import create_agent, delete_agent, get_agent, update_agent_messages
 from langgraph_setup import LangGraphSetup
 from llm_setup import LLMSetup
 from models.agents import AgentDB, CreateAgent
@@ -100,12 +100,15 @@ async def send_message_route(
         Research results
     """
     try:
-        # agent = await get_agent(agent_id)
-
-        results = langgraph_setup.research(message.message)
-        # TODO: Store messages in AgentDB
+        query = message.message
+        agent = await get_agent(agent_id)
+        if not agent:
+            return {"role": "system", "content": "Agent not found."}
         
-        return results[-1] if results else {"role": "assistant", "content": "No response generated."}
+        await update_agent_messages(agent_id, query)
+        messages = langgraph_setup.research(query)
+            
+        return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
         
     except ValueError as e:
         raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")

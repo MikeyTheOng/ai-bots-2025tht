@@ -8,6 +8,7 @@ class CreateAgent(BaseModel):
 class AgentDB(Document):
     """Agent document stored in MongoDB"""
     name: str
+    messages: list[str] = []
     
     class Settings:
         name = "agents"
