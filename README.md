@@ -19,7 +19,13 @@ source .venv/bin/activate
 # Install dependencies
 pip install -r requirements.txt
 ```
-3. Set up MongoDB
+
+3. Set up environment variables
+   - Create a `.env` file in the project root directory
+   - Use the template in `.env.example` as a reference
+   - Be sure to add your `OPENAI_API_KEY` 
+
+4. Set up MongoDB
 ```bash
 docker pull mongo
 docker run -d --name i-love-mongo \
@@ -29,10 +35,23 @@ docker run -d --name i-love-mongo \
     mongo
 ```
 
-4. Run FastAPI server
+5. Run FastAPI server
 ```bash
 fastapi dev main.py
 ```
+
+## API Documentation
+
+The API endpoints can be accessed and tested through the Swagger UI:
+```
+http://localhost:8000/docs
+```
+
+This provides an interactive interface where you can:
+- View all available endpoints
+- Send test requests
+- See request/response schemas
+- Authenticate if needed
 
 ## Testing
 
