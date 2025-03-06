@@ -1,4 +1,4 @@
-from typing import Tuple, Dict, List, Optional
+from typing import Tuple, Optional
 import os
 from unstructured.partition.auto import partition
 from unstructured.partition.doc import partition_doc
@@ -7,6 +7,7 @@ from unstructured.partition.pdf import partition_pdf
 from unstructured.partition.ppt import partition_ppt
 from unstructured.partition.pptx import partition_pptx
 from unstructured.partition.xlsx import partition_xlsx
+from unstructured.partition.html import partition_html
 from .token_manager import TokenManager
 
 class DocumentExtractor:
@@ -112,36 +113,26 @@ class DocumentExtractor:
         except Exception as e:
             raise Exception(f"Error extracting text from {file_path}: {str(e)}")
     
-    def extract_batch(self, file_paths: List[str]) -> Dict[str, Tuple[str, int]]:
+    def extract_from_website(self, url: str) -> Tuple[str, int]:
         """
-        Extract text from multiple files.
+        Extract text from a website.
         
         Args:
-            file_paths (List[str]): List of file paths.
+            url (str): URL of the website to extract text from.
         
         Returns:
-            Dict[str, Tuple[str, int]]: Dictionary mapping file paths to (text, token_count) tuples.
+            Tuple[str, int]: Extracted text and token count.
             
-        Note:
-            If extraction fails for any file, it will be skipped and not included in the result.
+        Raises:
+            Exception: If there's an error during text extraction.
         """
-        results = {}
-        errors = {}
-        
-        for file_path in file_paths:
-            try:
-                if self.is_supported_file(file_path):
-                    text, tokens = self.extract_from_file(file_path)
-                    results[file_path] = (text, tokens)
-                else:
-                    _, ext = os.path.splitext(file_path.lower())
-                    errors[file_path] = f"Unsupported file extension: {ext}"
-            except Exception as e:
-                errors[file_path] = str(e)
-        
-        if errors:
-            print(f"Warning: Failed to extract text from {len(errors)} files:")
-            for file_path, error in errors.items():
-                print(f"  - {file_path}: {error}")
-        
-        return results
+        try:
+            elements = partition_html(url=url)
+            
+            text = "\n\n".join([str(element) for element in elements])
+            tokens = self.token_manager.count_tokens(text)
+            
+            return text, tokens
+            
+        except Exception as e:
+            raise Exception(f"Error extracting text from website {url}: {str(e)}")
