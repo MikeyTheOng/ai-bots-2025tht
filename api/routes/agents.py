@@ -246,12 +246,13 @@ async def send_message_route(
     try:
         query = message.message
         agent = await get_agent(agent_id)
+
         if not agent:
             return {"role": "system", "content": "Agent not found."}
         
         llm_setup = LLMSetup()
         tool_setup = ToolSetup()
-        langgraph_setup = LangGraphSetup(llm_setup, tool_setup, agent.files)
+        langgraph_setup = LangGraphSetup(llm_setup, tool_setup, agent.files, agent.websites)
 
         await update_agent_messages(agent_id, query)
         
