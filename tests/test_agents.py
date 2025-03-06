@@ -8,9 +8,10 @@ from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if parent_dir not in sys.path:
+if (parent_dir not in sys.path):
     sys.path.append(parent_dir)
 
+from db.errors import InvalidAgentIDError
 from main import app
 
 client = TestClient(app)
@@ -113,15 +114,29 @@ def test_get_agent_validation_error():
     """Test validation error handling"""
     agent_id = "invalid-id"
     
-    with patch("api.routes.agents.get_agent") as mock_get:
-        mock_get.side_effect = ValueError("Invalid agent ID format")
-        
-        response = client.get(f"/agents/{agent_id}")
-        
-        assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
-        
-        mock_get.assert_called_once_with(agent_id)
+    response = client.get(f"/agents/{agent_id}")
+    
+    assert response.status_code == 422
+    
+    response_json = response.json()
+
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 2
+    assert error["loc"][0] == "path"
+    assert error["loc"][1] == "agent_id"
+    
+    assert "msg" in error
+    assert "Invalid agent ID format" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_delete_agent_success():
     """Test successful agent deletion"""
