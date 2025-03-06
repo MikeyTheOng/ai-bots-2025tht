@@ -1,19 +1,26 @@
-from fastapi import APIRouter, Form, HTTPException
-from api.routes.utils import handle_validation_error
+from api.routes.utils import DefaultErrorMessages, handle_validation_error
+from db.agents import create_agent, delete_agent, get_agent, update_agent_files, update_agent_messages
+from fastapi import APIRouter, Form, HTTPException, UploadFile
 import json
-from db.agents import create_agent, delete_agent, get_agent, update_agent_messages
 from langgraph_setup import LangGraphSetup
 from llm_setup import LLMSetup
-from models.agents import AgentDB, CreateAgent
+from models.agents import AgentDB, CreateAgent, File as FileModel
 from models.messages import Message
 from tool_setup import ToolSetup
-from typing import Dict
+from typing import Dict, List
+from utils.document_extractor import DocumentExtractor
+from utils.token_manager import TokenManager
+import os
+import tempfile
 
 router = APIRouter()
 
 llm_setup = LLMSetup()
 tool_setup = ToolSetup()
 langgraph_setup = LangGraphSetup(llm_setup, tool_setup)
+
+token_manager = TokenManager(max_tokens=120000)
+document_extractor = DocumentExtractor(token_manager=token_manager)
 
 @router.post("/agents", status_code=201, response_model=Dict[str, str])
 async def create_agent_route(
@@ -85,8 +92,63 @@ async def delete_agent_route(
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
+        raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
     
+@router.put("/agents/{agent_id}/files", status_code=204)
+async def update_agent_files_route(
+    agent_id: str,
+    files: List[UploadFile]
+):
+    """
+    Extracts text from the files uploaded, populating the agent's file list.
+    """
+    try:
+        agent = await get_agent(agent_id)
+        if not agent:
+            return
+        
+        file_records = []
+        current_tokens = sum(file.tokens for file in agent.files)
+        
+        with tempfile.TemporaryDirectory() as temp_dir:
+            for file in files:
+                file_path = os.path.join(temp_dir, file.filename)
+                with open(file_path, "wb") as f:
+                    f.write(await file.read())
+                
+                if not document_extractor.is_supported_file(file_path):
+                    _, ext = os.path.splitext(file_path.lower())
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Unsupported file extension: {ext}. Supported types are: {', '.join(document_extractor.SUPPORTED_EXTENSIONS.keys())}"
+                    )
+                
+                try:
+                    text, tokens = document_extractor.extract_from_file(file_path)
+                except Exception as e:
+                    raise HTTPException(status_code=400, detail=f"Error processing file {file.filename}: {str(e)}")
+                
+                would_exceed, total_tokens = token_manager.check_token_limit(current_tokens, tokens)
+                if would_exceed:
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Token limit exceeded. Current: {current_tokens}, Additional: {tokens}, Total would be: {total_tokens}, Max: {token_manager.max_tokens}"
+                    )
+                
+                current_tokens = total_tokens 
+                
+                file_records.append(FileModel(
+                    name=file.filename,
+                    text=text,
+                    tokens=tokens
+                ))
+        
+        await update_agent_files(agent_id, file_records)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
+
 @router.post("/agents/{agent_id}/queries", status_code=201)
 async def send_message_route(
     agent_id: str,
