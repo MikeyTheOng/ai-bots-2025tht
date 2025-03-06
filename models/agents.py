@@ -19,6 +19,7 @@ class CreateAgent(BaseModel):
         name (str): Name of the Agent
     """
     name: str
+    files: List[File] = Field(default=[])
 
 class AgentDB(Document):
     """

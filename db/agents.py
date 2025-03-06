@@ -14,7 +14,7 @@ async def create_agent(new_agent: CreateAgent):
         Newly created agent
     """
     try:
-        new_agent = AgentDB(name=new_agent.name)
+        new_agent = AgentDB(name=new_agent.name, files=new_agent.files)
         await new_agent.insert()
         
         return new_agent
