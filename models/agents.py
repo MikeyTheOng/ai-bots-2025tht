@@ -26,10 +26,12 @@ class AgentDB(Document):
     Attributes
         name (str): Name of the Agent
         files (list[File]): Files to access
+        websites (list[File]): Websites crawled
         messages (list[str]): All prompts by user
     """
     name: str
     files: List[File] = Field(default=[])
+    websites: List[File] = Field(default=[])
     messages: List[str] = Field(default=[])
     
     class Settings:

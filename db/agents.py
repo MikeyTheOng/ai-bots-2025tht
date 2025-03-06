@@ -108,3 +108,28 @@ async def update_agent_messages(agent_id: str, message: str):
         return agent
     except:
         raise
+    
+async def update_agent_websites(agent_id: str, new_websites: List[FileModel]):
+    """
+    Update agent websites
+    
+    Args:
+        agent_id: ID of the agent to update
+        websites: List of websites to update agent websites
+        
+    Returns:
+        Updated agent or None if agent doesn't exist
+    """
+    try:
+        if not ObjectId.is_valid(agent_id):
+            raise InvalidAgentIDError(agent_id)
+        
+        agent = await AgentDB.get(agent_id)
+        
+        agent.websites.extend(new_websites)
+        
+        await agent.save()
+        
+        return agent
+    except:
+        raise
