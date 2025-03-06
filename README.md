@@ -12,6 +12,12 @@ A backend application that manages a Research Agent designed to assist users in 
   - Web search via DuckDuckGo
 - Tool selection based on query requirements
 - Research synthesis into coherent responses
+- Knowledge base personalization:
+  - Text extraction from common file types (.pdf, .docx, .doc, .xlsx, .xls, .ppt, .pptx)
+  - Text extraction from specified websites
+  - Tokenization of extracted text
+  - Prioritization of knowledge base usage over tool usage
+  - Token limit validation (120k token maximum context)
 
 ## Sample Output
 
@@ -75,7 +81,13 @@ pip install -r requirements.txt
    - Use the template in `.env.example` as a reference
    - Be sure to add your `OPENAI_API_KEY` 
 
-4. Set up MongoDB
+4. Docker Setup (Recommended)
+```bash
+# Build and start with Docker Compose
+docker-compose up -d
+```
+
+5. Manual MongoDB Setup (Alternative to Docker)
 ```bash
 docker pull mongo
 docker run -d --name i-love-mongo \
@@ -85,7 +97,7 @@ docker run -d --name i-love-mongo \
     mongo
 ```
 
-5. Run FastAPI server
+6. Run FastAPI server (if not using Docker)
 ```bash
 fastapi dev main.py
 ```
