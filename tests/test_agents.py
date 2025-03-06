@@ -11,7 +11,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if (parent_dir not in sys.path):
     sys.path.append(parent_dir)
 
-from db.errors import InvalidAgentIDError
+from api.routes.utils import DefaultErrorMessages
 from main import app
 
 client = TestClient(app)
@@ -71,7 +71,7 @@ def test_create_agent_database_error():
         )
         
         assert response.status_code == 500
-        assert "Error creating agent" in response.json()["detail"]
+        assert DefaultErrorMessages.INTERNAL_SERVER_ERROR in response.json()["detail"]
 
 def test_get_agent_success():
     """Test successful agent retrieval"""
@@ -119,7 +119,7 @@ def test_get_agent_validation_error():
     assert response.status_code == 422
     
     response_json = response.json()
-
+    print("response_json: ", response_json)
     assert "detail" in response_json
     assert isinstance(response_json["detail"], list)
     assert len(response_json["detail"]) > 0
@@ -255,14 +255,15 @@ class TestAgentQueriesRoute:
         message = {"message": "What is climate change?"}
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)
+        print("response: ", response)
         
         assert response.status_code == 500
-        assert "Error querying agent" in response.json()["detail"]
+        assert DefaultErrorMessages.INTERNAL_SERVER_ERROR in response.json()["detail"]
     
     @patch("api.routes.agents.get_agent") 
     @patch("api.routes.agents.update_agent_messages") 
     @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
+    def test_send_message_empty_research_results(self, mock_research, mock_update_messages, mock_get_agent):
         """Test handling of empty research results"""
         mock_agent = MagicMock()
         mock_agent._id = "507f1f77bcf86cd799439011"

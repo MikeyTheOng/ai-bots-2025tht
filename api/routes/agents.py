@@ -38,7 +38,7 @@ async def create_agent_route(
     except ValueError as e:
         raise HTTPException(status_code=422, detail=f"Invalid agent data: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating agent: {str(e)}")
+        raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
     
 @router.get("/agents/{agent_id}", status_code=200, response_model=AgentDB)
 async def get_agent_route(
@@ -59,11 +59,12 @@ async def get_agent_route(
             return AgentDB(name="")
         return agent
     except ValueError as e:
-        raise handle_validation_error(e, location=["path", "agent_id"])
+        location = ["path", "agent_id"] if DefaultErrorMessages.INVALID_AGENT_ID in str(e) else None
+        raise handle_validation_error(e, location=location)
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error retrieving agent: {str(e)}")
+        raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
 
 @router.delete("/agents/{agent_id}", status_code=204)
 async def delete_agent_route(
@@ -79,7 +80,8 @@ async def delete_agent_route(
     try:
         await delete_agent(agent_id)
     except ValueError as e:
-        raise handle_validation_error(e, location=["path", "agent_id"])
+        location = ["path", "agent_id"] if DefaultErrorMessages.INVALID_AGENT_ID in str(e) else None
+        raise handle_validation_error(e, location=location)
     except HTTPException:
         raise
     except Exception as e:
@@ -112,8 +114,9 @@ async def send_message_route(
         return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
         
     except ValueError as e:
-        raise handle_validation_error(e, location=["path", "agent_id"])
+        location = ["path", "agent_id"] if DefaultErrorMessages.INVALID_AGENT_ID in str(e) else None
+        raise handle_validation_error(e, location=location)
     except HTTPException:
         raise
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error querying agent: {str(e)}")
+        raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
