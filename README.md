@@ -18,30 +18,30 @@ A backend application that manages a Research Agent designed to assist users in 
 When querying the Research Agent about investment comparison between Nvidia and Apple:
 
 ```
-1. Summary: Both Nvidia and Apple are strong contenders for investment in 2023, but they cater to different market segments and have distinct growth trajectories. Nvidia has shown remarkable growth, particularly in the AI and gaming sectors, while Apple continues to maintain a solid market presence with steady growth forecasts.
+1. **Summary**: Both Nvidia and Apple are strong contenders for investment in 2023, but they cater to different market segments and have distinct growth trajectories. Nvidia has shown remarkable growth, particularly in the AI and gaming sectors, while Apple continues to maintain a solid market presence with steady growth forecasts.
 
-2. Detailed Information:
+2. **Detailed Information**:
 
-   - Nvidia (NVDA):
-     - Nvidia's stock has experienced significant growth, soaring 239% in 2023, driven by its dominance in the graphics processing unit (GPU) market and increasing demand for AI technologies.
-     - Analysts have a "Strong Buy" rating on Nvidia, indicating confidence in its future performance.
-     - Despite a recent dip in the market, Nvidia's earnings reports have consistently set records, suggesting a robust business model and potential for continued growth.
-     - The stock is currently valued at approximately $101 per share, which some analysts believe is undervalued given its growth potential.
+   - **Nvidia (NVDA)**:
+     - Nvidia's stock has experienced significant growth, soaring 239% in 2023, driven by its dominance in the graphics processing unit (GPU) market and increasing demand for AI technologies [1](https://www.fool.com/investing/2024/01/10/why-nvidia-stock-skyrocketed-239-in-2023/).
+     - Analysts have a \"Strong Buy\" rating on Nvidia, indicating confidence in its future performance [2](https://stockanalysis.com/stocks/nvda/forecast/).
+     - Despite a recent dip in the market, Nvidia's earnings reports have consistently set records, suggesting a robust business model and potential for continued growth [3](https://www.fool.com/investing/2024/03/20/nvidia-stock-soared-239-in-2023-and-1-wall-street/).
+     - The stock is currently valued at approximately $101 per share, which some analysts believe is undervalued given its growth potential [4](https://www.forbes.com/sites/greatspeculations/2025/03/05/nvidia-stock-are-tariff-fears-overblown/).
 
-   - Apple (AAPL):
-     - Apple has an average analyst rating of "Buy," with a 12-month price forecast of $242.36, indicating a slight expected increase from its current price.
-     - Analysts predict a range of price targets for Apple, with estimates as low as $180 and as high as $325, reflecting varying opinions on its future performance.
-     - The company is expected to benefit from new product launches, including an AR/VR headset, which could enhance its market value.
+   - **Apple (AAPL)**:
+     - Apple has an average analyst rating of \"Buy,\" with a 12-month price forecast of $242.36, indicating a slight expected increase from its current price [5](https://stockanalysis.com/stocks/aapl/forecast/).
+     - Analysts predict a range of price targets for Apple, with estimates as low as $180 and as high as $325, reflecting varying opinions on its future performance [6](https://stockanalysis.com/stocks/aapl/).
+     - The company is expected to benefit from new product launches, including an AR/VR headset, which could enhance its market value [7](https://www.forbes.com/sites/qai/2022/12/28/apple-stock-predictions-2023-to-2025/).
      - Apple's consistent performance and strong brand loyalty make it a stable investment option, although its growth may not be as explosive as Nvidia's.
 
-3. References:
-   1. Why Nvidia Stock Skyrocketed 239% in 2023 (The Motley Fool)
-   2. NVIDIA Corporation (NVDA) Stock Forecast & Price Targets (Stock Analysis)
-   3. Nvidia Stock Soared 239% in 2023, and 1 Wall Street Analyst Says It... (The Motley Fool)
-   4. Nvidia Stock: Are Tariff Fears Overblown? (Forbes)
-   5. Apple Inc. (AAPL) Stock Forecast & Price Targets (Stock Analysis)
-   6. Apple Inc. (AAPL) Analyst Ratings, Estimates & Forecasts (Yahoo Finance)
-   7. Apple Stock Predictions: 2023 To 2025 (Forbes)
+3. **References**:
+   1. [Why Nvidia Stock Skyrocketed 239% in 2023](https://www.fool.com/investing/2024/01/10/why-nvidia-stock-skyrocketed-239-in-2023/)
+   2. [NVIDIA Corporation (NVDA) Stock Forecast & Price Targets](https://stockanalysis.com/stocks/nvda/forecast/)
+   3. [Nvidia Stock Soared 239% in 2023, and 1 Wall Street Analyst Says It ...](https://www.fool.com/investing/2024/03/20/nvidia-stock-soared-239-in-2023-and-1-wall-street/)
+   4. [Nvidia Stock: Are Tariff Fears Overblown?](https://www.forbes.com/sites/greatspeculations/2025/03/05/nvidia-stock-are-tariff-fears-overblown/)
+   5. [Apple Inc. (AAPL) Stock Forecast & Price Targets](https://stockanalysis.com/stocks/aapl/forecast/)
+   6. [Apple Inc. (AAPL) Analyst Ratings, Estimates & Forecasts](https://finance.yahoo.com/quote/AAPL/analysis/)
+   7. [Apple Stock Predictions: 2023 To 2025](https://www.forbes.com/sites/qai/2022/12/28/apple-stock-predictions-2023-to-2025/)"
 ```
 
 
