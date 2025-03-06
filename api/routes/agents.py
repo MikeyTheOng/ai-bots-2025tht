@@ -15,10 +15,6 @@ import tempfile
 
 router = APIRouter()
 
-llm_setup = LLMSetup()
-tool_setup = ToolSetup()
-langgraph_setup = LangGraphSetup(llm_setup, tool_setup)
-
 token_manager = TokenManager(max_tokens=120000)
 document_extractor = DocumentExtractor(token_manager=token_manager)
 
@@ -170,7 +166,12 @@ async def send_message_route(
         if not agent:
             return {"role": "system", "content": "Agent not found."}
         
+        llm_setup = LLMSetup()
+        tool_setup = ToolSetup()
+        langgraph_setup = LangGraphSetup(llm_setup, tool_setup, agent.files)
+
         await update_agent_messages(agent_id, query)
+        
         messages = langgraph_setup.research(query)
             
         return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
