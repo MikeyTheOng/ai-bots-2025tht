@@ -5,6 +5,7 @@ class DefaultErrorMessages:
     
     INVALID_AGENT_ID = "Invalid agent ID format"
     FORBIDDEN = "Access forbidden"
+    INVALID_JSON_FORMAT = "Invalid JSON format"
     INTERNAL_SERVER_ERROR = "Internal server error occurred"
     
 def handle_validation_error(error, location=None):

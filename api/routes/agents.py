@@ -91,9 +91,8 @@ async def create_agent_route(
         new_agent = await create_agent(validated_agent)
         return {"agent_id": str(new_agent.id)}
     
-    # TODO: Raise validation errors properly
     except json.JSONDecodeError:
-        raise handle_validation_error(ValueError("Invalid JSON format"))
+        raise handle_validation_error(ValueError(DefaultErrorMessages.INVALID_JSON_FORMAT))
     except ValueError as e:
         raise handle_validation_error(e)
     except Exception as e:
