@@ -156,15 +156,29 @@ def test_delete_agent_validation_error():
     """Test validation error handling during deletion"""
     agent_id = "invalid-id"
     
-    with patch("api.routes.agents.delete_agent") as mock_delete:
-        mock_delete.side_effect = ValueError("Invalid agent ID format")
-        
-        response = client.delete(f"/agents/{agent_id}")
-        
-        assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
-        
-        mock_delete.assert_called_once_with(agent_id)
+    response = client.delete(f"/agents/{agent_id}")
+    
+    assert response.status_code == 422
+    
+    response_json = response.json()
+
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 2
+    assert error["loc"][0] == "path"
+    assert error["loc"][1] == "agent_id"
+    
+    assert "msg" in error
+    assert "Invalid agent ID format" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 class TestAgentQueriesRoute:
     @pytest.fixture

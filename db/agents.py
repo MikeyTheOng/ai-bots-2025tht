@@ -51,15 +51,13 @@ async def delete_agent(agent_id: str):
     """
     try:
         if not ObjectId.is_valid(agent_id):
-            raise HTTPException(status_code=422, detail="Invalid agent ID format")
+            raise InvalidAgentIDError(agent_id, location=["path", "agent_id"])
         agent = await AgentDB.get(agent_id)
         if not agent:
             return None
         await agent.delete()
-    except HTTPException:
+    except:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error deleting agent: {str(e)}")
     
 async def update_agent_messages(agent_id: str, message: str):
     """

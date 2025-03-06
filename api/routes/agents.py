@@ -79,7 +79,7 @@ async def delete_agent_route(
     try:
         await delete_agent(agent_id)
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+        raise handle_validation_error(e)
     except HTTPException:
         raise
     except Exception as e:
