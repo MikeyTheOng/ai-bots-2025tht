@@ -15,9 +15,11 @@ A backend application that manages a Research Agent designed to assist users in 
 
 ## Sample Output
 
-When querying the Research Agent about investment comparison between Nvidia and Apple:
-
+```markdown
+Example Query: Should I invest into nvidia or apple?
 ```
+
+
 **Summary**: Both Nvidia and Apple present compelling investment opportunities, but they cater to different market dynamics. Nvidia is heavily focused on the AI sector, showing strong growth and profitability, while Apple is investing significantly in U.S. infrastructure and maintaining a robust product ecosystem despite recent challenges in iPhone sales.
 
 **Detailed Analysis**:
@@ -47,7 +49,7 @@ When querying the Research Agent about investment comparison between Nvidia and 
 4. [Forbes - Apple Promises $500 Billion U.S. Investment](https://www.forbes.com/sites/siladityaray/2025/02/24/apple-promises-500-billion-us-investment-and-20000-jobs/)
 5. [TheStreet.com - Apple Stock Outlook 2024](https://www.thestreet.com/apple/stock/apple-stock-outlook-2024-challenges-and-trends)
 6. [USA Today - Apple's $725 billion investment](https://www.usatoday.com/story/money/investing/2025/02/06/apple-725-billion-investment/78015792007/)
-```
+
 
 
 ## Setup and Installation
