@@ -281,23 +281,35 @@ class TestAgentQueriesRoute:
         assert response.status_code == 201
         assert response.json() == {"role": "assistant", "content": "No response generated."}
     
-    @patch("api.routes.agents.get_agent") 
-    @patch("api.routes.agents.update_agent_messages") 
-    @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
-        """Test handling of validation errors"""
-        mock_agent = MagicMock()
-        mock_agent._id = "507f1f77bcf86cd799439011"
-        mock_agent.name = "Test Agent"
-        mock_get_agent.return_value = mock_agent
-        
-        mock_update_messages.return_value = mock_agent
-        mock_research.side_effect = ValueError("Invalid message format")
-        
-        agent_id = str(ObjectId())
-        message = {"message": "What is climate change?"}
-        
-        response = client.post(f"/agents/{agent_id}/queries", json=message)
+    def test_send_message_missing_required_fields(self):
+        """Test handling of invalid body JSON"""
+        agent_id = "507f1f77bcf86cd799439011"
+        response = client.post(
+            f"/agents/{agent_id}/queries", 
+            json={
+                "message1": "What's the name of Gundam's pilot?"
+            }
+        )
         
         assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
+        
+        response_json = response.json()
+
+        assert "detail" in response_json
+        assert isinstance(response_json["detail"], list)
+        assert len(response_json["detail"]) > 0
+        
+        error = response_json["detail"][0]
+        
+        assert "loc" in error
+        assert isinstance(error["loc"], list)
+        assert len(error["loc"]) == 2
+        assert error["loc"][0] == "body"
+        assert error["loc"][1] == "message"
+        
+        assert "msg" in error
+        assert "Field required" in error["msg"]
+        
+        assert "type" in error
+        assert "missing" in error["type"]
+        

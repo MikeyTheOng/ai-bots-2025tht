@@ -112,7 +112,7 @@ async def send_message_route(
         return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
         
     except ValueError as e:
-        raise HTTPException(status_code=422, detail=f"Validation error: {str(e)}")
+        raise handle_validation_error(e)
     except HTTPException:
         raise
     except Exception as e:
