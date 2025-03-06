@@ -1,5 +1,5 @@
 from api.routes.utils import DefaultErrorMessages, handle_validation_error
-from db.agents import create_agent, delete_agent, get_agent, update_agent_files, update_agent_messages
+from db.agents import create_agent, delete_agent, get_agent, update_agent_files, update_agent_messages, update_agent_websites
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 import json
 from langgraph_setup import LangGraphSetup
@@ -145,6 +145,58 @@ async def delete_agent_route(
     except Exception as e:
         raise HTTPException(status_code=500, detail=DefaultErrorMessages.INTERNAL_SERVER_ERROR)
     
+@router.put("/agents/{agent_id}/websites", status_code=204)
+async def update_agent_websites_route(
+    agent_id: str,
+    websites: List[str]
+):
+    """
+    Extract text from websites specified, populating the agent's website list.
+    This is part of the bonus assignment.
+    """
+    try:
+        agent = await get_agent(agent_id)
+        if not agent:
+            return
+        
+        current_tokens = sum(file.tokens for file in agent.files)
+        current_tokens += sum(website.tokens for website in agent.websites)
+        
+        website_files = []
+        
+        for url in websites:
+            try:
+                if not url.startswith("https"):
+                    raise ValueError("URL must start with 'https'")
+                text, tokens = document_extractor.extract_from_website(url)
+                
+                would_exceed, _ = token_manager.check_token_limit(current_tokens, tokens)
+                if would_exceed:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Token limit exceeded. Max: {token_manager.max_tokens}"
+                    )
+                
+                website_files.append(FileModel(
+                    name=url,
+                    text=text,
+                    tokens=tokens
+                ))
+                current_tokens += tokens
+            except Exception as e:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to extract text from website {url}: {str(e)}"
+                )
+        
+        await update_agent_websites(agent_id, website_files) 
+    except ValueError as e:
+        raise handle_validation_error(e)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
+    
 @router.put("/agents/{agent_id}/files", status_code=204)
 async def update_agent_files_route(
     agent_id: str,
@@ -159,14 +211,15 @@ async def update_agent_files_route(
             return
         
         file_records = []
-        initial_tokens = sum(file.tokens for file in agent.files)
+        current_tokens = sum(file.tokens for file in agent.files)
+        current_tokens += sum(website.tokens for website in agent.websites)
         
-        file_records, new_tokens = await process_files(files, initial_tokens)
+        file_records, new_tokens = await process_files(files, current_tokens)
         
-        if initial_tokens + new_tokens > token_manager.max_tokens:
+        if current_tokens + new_tokens > token_manager.max_tokens:
             raise HTTPException(
                 status_code=400,
-                detail=f"Token limit exceeded. Current: {initial_tokens}, Additional: {new_tokens}, Total would be: {initial_tokens + new_tokens}, Max: {token_manager.max_tokens}"
+                detail=f"Token limit exceeded. Current: {current_tokens}, Additional: {new_tokens}, Total would be: {current_tokens + new_tokens}, Max: {token_manager.max_tokens}"
             )
         
         await update_agent_files(agent_id, file_records)
@@ -193,12 +246,13 @@ async def send_message_route(
     try:
         query = message.message
         agent = await get_agent(agent_id)
+
         if not agent:
             return {"role": "system", "content": "Agent not found."}
         
         llm_setup = LLMSetup()
         tool_setup = ToolSetup()
-        langgraph_setup = LangGraphSetup(llm_setup, tool_setup, agent.files)
+        langgraph_setup = LangGraphSetup(llm_setup, tool_setup, agent.files, agent.websites)
 
         await update_agent_messages(agent_id, query)
         

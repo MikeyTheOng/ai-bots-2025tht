@@ -1,4 +1,3 @@
-# app/db/init_db.py
 import os
 from typing import Optional
 from beanie import init_beanie
