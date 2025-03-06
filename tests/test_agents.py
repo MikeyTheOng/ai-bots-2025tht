@@ -160,25 +160,49 @@ class TestAgentQueriesRoute:
             {"role": "assistant", "content": "Climate change refers to long-term shifts in temperatures and weather patterns. [https://example.org/climate]"}
         ]
     
+    @patch("api.routes.agents.get_agent")
+    @patch("api.routes.agents.update_agent_messages") 
     @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_success(self, mock_research, mock_research_results):
+    def test_send_message_success(self, mock_research, mock_update_messages, mock_get_agent, mock_research_results):
         """Test successful message sending"""
-        mock_research.return_value = mock_research_results
-        
-        agent_id = str(ObjectId())
+        agent_id = "507f1f77bcf86cd799439011"
         message = {"message": "What is climate change?"}
+        
+        mock_agent = MagicMock()
+        mock_agent._id = ObjectId(agent_id)
+        mock_agent.name = "Test Agent"
+        mock_get_agent.return_value = mock_agent
+        
+        updated_agent = MagicMock()
+        updated_agent._id = ObjectId(agent_id)
+        updated_agent.name = "Test Agent"
+        updated_agent.messages = ["What is climate change?"]
+        mock_update_messages.return_value = updated_agent
+        
+        mock_research.return_value = mock_research_results
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)
         
         assert response.status_code == 201
         
+        mock_get_agent.assert_called_once_with(agent_id)
+        mock_update_messages.assert_called_once_with(agent_id, "What is climate change?")
         mock_research.assert_called_once_with("What is climate change?")
         
         assert response.json() == mock_research_results[-1]
-    
+
+    @patch("api.routes.agents.get_agent")
+    @patch("api.routes.agents.update_agent_messages")
     @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research):
+    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
         """Test handling of research errors"""
+        mock_agent = MagicMock()
+        mock_agent._id = "507f1f77bcf86cd799439011"
+        mock_agent.name = "Test Agent"
+        mock_get_agent.return_value = mock_agent
+        
+        mock_update_messages.return_value = mock_agent
+        
         mock_research.side_effect = Exception("Research error")
         
         agent_id = str(ObjectId())
@@ -189,9 +213,18 @@ class TestAgentQueriesRoute:
         assert response.status_code == 500
         assert "Error querying agent" in response.json()["detail"]
     
+    @patch("api.routes.agents.get_agent") 
+    @patch("api.routes.agents.update_agent_messages") 
     @patch("api.routes.agents.langgraph_setup.research")
-    def test_empty_research_results(self, mock_research):
+    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
         """Test handling of empty research results"""
+        mock_agent = MagicMock()
+        mock_agent._id = "507f1f77bcf86cd799439011"
+        mock_agent.name = "Test Agent"
+        mock_get_agent.return_value = mock_agent
+        
+        mock_update_messages.return_value = mock_agent
+
         mock_research.return_value = []
         
         agent_id = str(ObjectId())
@@ -202,9 +235,17 @@ class TestAgentQueriesRoute:
         assert response.status_code == 201
         assert response.json() == {"role": "assistant", "content": "No response generated."}
     
+    @patch("api.routes.agents.get_agent") 
+    @patch("api.routes.agents.update_agent_messages") 
     @patch("api.routes.agents.langgraph_setup.research")
-    def test_validation_error(self, mock_research):
+    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
         """Test handling of validation errors"""
+        mock_agent = MagicMock()
+        mock_agent._id = "507f1f77bcf86cd799439011"
+        mock_agent.name = "Test Agent"
+        mock_get_agent.return_value = mock_agent
+        
+        mock_update_messages.return_value = mock_agent
         mock_research.side_effect = ValueError("Invalid message format")
         
         agent_id = str(ObjectId())
