@@ -18,30 +18,35 @@ A backend application that manages a Research Agent designed to assist users in 
 When querying the Research Agent about investment comparison between Nvidia and Apple:
 
 ```
-1. **Summary**: Both Nvidia and Apple are strong contenders for investment in 2023, but they cater to different market segments and have distinct growth trajectories. Nvidia has shown remarkable growth, particularly in the AI and gaming sectors, while Apple continues to maintain a solid market presence with steady growth forecasts.
+**Summary**: Both Nvidia and Apple present compelling investment opportunities, but they cater to different market dynamics. Nvidia is heavily focused on the AI sector, showing strong growth and profitability, while Apple is investing significantly in U.S. infrastructure and maintaining a robust product ecosystem despite recent challenges in iPhone sales.
 
-2. **Detailed Information**:
+**Detailed Analysis**:
 
-   - **Nvidia (NVDA)**:
-     - Nvidia's stock has experienced significant growth, soaring 239% in 2023, driven by its dominance in the graphics processing unit (GPU) market and increasing demand for AI technologies [1](https://www.fool.com/investing/2024/01/10/why-nvidia-stock-skyrocketed-239-in-2023/).
-     - Analysts have a \"Strong Buy\" rating on Nvidia, indicating confidence in its future performance [2](https://stockanalysis.com/stocks/nvda/forecast/).
-     - Despite a recent dip in the market, Nvidia's earnings reports have consistently set records, suggesting a robust business model and potential for continued growth [3](https://www.fool.com/investing/2024/03/20/nvidia-stock-soared-239-in-2023-and-1-wall-street/).
-     - The stock is currently valued at approximately $101 per share, which some analysts believe is undervalued given its growth potential [4](https://www.forbes.com/sites/greatspeculations/2025/03/05/nvidia-stock-are-tariff-fears-overblown/).
+### Nvidia Investment Outlook
+1. **Strong Financial Performance**: Nvidia has recently reported impressive earnings, doubling its profits in 2024, largely driven by the demand for AI technology. This growth has positioned Nvidia as a leader in the AI chip market, which is expected to continue expanding [CNN](https://www.msn.com/en-us/money/other/nvidia-doubled-profits-in-2024-and-its-outlook-is-rosy-despite-ai-jitters/ar-AA1zRkP2).
 
-   - **Apple (AAPL)**:
-     - Apple has an average analyst rating of \"Buy,\" with a 12-month price forecast of $242.36, indicating a slight expected increase from its current price [5](https://stockanalysis.com/stocks/aapl/forecast/).
-     - Analysts predict a range of price targets for Apple, with estimates as low as $180 and as high as $325, reflecting varying opinions on its future performance [6](https://stockanalysis.com/stocks/aapl/).
-     - The company is expected to benefit from new product launches, including an AR/VR headset, which could enhance its market value [7](https://www.forbes.com/sites/qai/2022/12/28/apple-stock-predictions-2023-to-2025/).
-     - Apple's consistent performance and strong brand loyalty make it a stable investment option, although its growth may not be as explosive as Nvidia's.
+2. **Market Position and Growth Potential**: The company has seen its stock price triple since October 2023, reflecting optimism in the AI sector. However, there are concerns about competition, particularly from new entrants like the Chinese startup DeepSeek, which could impact Nvidia's market dominance [InvestmentNews](https://www.investmentnews.com/industry-news/why-options-traders-are-cautious-about-nvidia-earnings-this-week/259426).
 
-3. **References**:
-   1. [Why Nvidia Stock Skyrocketed 239% in 2023](https://www.fool.com/investing/2024/01/10/why-nvidia-stock-skyrocketed-239-in-2023/)
-   2. [NVIDIA Corporation (NVDA) Stock Forecast & Price Targets](https://stockanalysis.com/stocks/nvda/forecast/)
-   3. [Nvidia Stock Soared 239% in 2023, and 1 Wall Street Analyst Says It ...](https://www.fool.com/investing/2024/03/20/nvidia-stock-soared-239-in-2023-and-1-wall-street/)
-   4. [Nvidia Stock: Are Tariff Fears Overblown?](https://www.forbes.com/sites/greatspeculations/2025/03/05/nvidia-stock-are-tariff-fears-overblown/)
-   5. [Apple Inc. (AAPL) Stock Forecast & Price Targets](https://stockanalysis.com/stocks/aapl/forecast/)
-   6. [Apple Inc. (AAPL) Analyst Ratings, Estimates & Forecasts](https://finance.yahoo.com/quote/AAPL/analysis/)
-   7. [Apple Stock Predictions: 2023 To 2025](https://www.forbes.com/sites/qai/2022/12/28/apple-stock-predictions-2023-to-2025/)"
+3. **Investment Sentiment**: Analysts suggest that despite some volatility, Nvidia remains a strong buy due to its pivotal role in the AI revolution and the growing demand for its products [The Motley Fool](https://www.fool.com/investing/2025/02/19/2-reasons-buy-nvidia-stock-wake-deepseek/).
+
+### Apple Investment Outlook
+1. **Significant U.S. Investment**: Apple has announced plans to invest over $500 billion in the U.S. over the next four years, which includes building new facilities and creating jobs. This move is seen as a strategic effort to bolster its domestic operations and mitigate risks associated with international supply chains [Forbes](https://www.forbes.com/sites/siladityaray/2025/02/24/apple-promises-500-billion-us-investment-and-20000-jobs/).
+
+2. **Challenges in Sales**: Despite its strong brand and ecosystem, Apple faced a decline in iPhone sales in 2023. Analysts are cautiously optimistic about a potential rebound, but the company must navigate market saturation and competition in the smartphone sector [TheStreet.com](https://www.thestreet.com/apple/stock/apple-stock-outlook-2024-challenges-and-trends).
+
+3. **Long-term Growth Strategy**: Apple's investment strategy is aimed at sustaining its growth trajectory and enhancing its competitive edge, particularly in the face of economic uncertainties and evolving consumer preferences [USA Today](https://www.usatoday.com/story/money/investing/2025/02/06/apple-725-billion-investment/78015792007/).
+
+**Key Insights**:
+- **Nvidia** is positioned for growth in the AI sector, with strong financial results and a leading market position, but faces competitive threats.
+- **Apple** is making substantial investments in the U.S. to strengthen its operations, although it is currently dealing with challenges in iPhone sales.
+
+**References**:
+1. [CNN - Nvidia doubled profits in 2024](https://www.msn.com/en-us/money/other/nvidia-doubled-profits-in-2024-and-its-outlook-is-rosy-despite-ai-jitters/ar-AA1zRkP2)
+2. [The Motley Fool - 2 Reasons to Buy Nvidia Stock](https://www.fool.com/investing/2025/02/19/2-reasons-buy-nvidia-stock-wake-deepseek/)
+3. [InvestmentNews - Why options traders are cautious about Nvidia](https://www.investmentnews.com/industry-news/why-options-traders-are-cautious-about-nvidia-earnings-this-week/259426)
+4. [Forbes - Apple Promises $500 Billion U.S. Investment](https://www.forbes.com/sites/siladityaray/2025/02/24/apple-promises-500-billion-us-investment-and-20000-jobs/)
+5. [TheStreet.com - Apple Stock Outlook 2024](https://www.thestreet.com/apple/stock/apple-stock-outlook-2024-challenges-and-trends)
+6. [USA Today - Apple's $725 billion investment](https://www.usatoday.com/story/money/investing/2025/02/06/apple-725-billion-investment/78015792007/)
 ```
 
 
