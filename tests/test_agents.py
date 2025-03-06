@@ -8,9 +8,10 @@ from fastapi.testclient import TestClient
 from unittest.mock import MagicMock, patch
 
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if parent_dir not in sys.path:
+if (parent_dir not in sys.path):
     sys.path.append(parent_dir)
 
+from db.errors import InvalidAgentIDError
 from main import app
 
 client = TestClient(app)
@@ -113,15 +114,29 @@ def test_get_agent_validation_error():
     """Test validation error handling"""
     agent_id = "invalid-id"
     
-    with patch("api.routes.agents.get_agent") as mock_get:
-        mock_get.side_effect = ValueError("Invalid agent ID format")
-        
-        response = client.get(f"/agents/{agent_id}")
-        
-        assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
-        
-        mock_get.assert_called_once_with(agent_id)
+    response = client.get(f"/agents/{agent_id}")
+    
+    assert response.status_code == 422
+    
+    response_json = response.json()
+
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 2
+    assert error["loc"][0] == "path"
+    assert error["loc"][1] == "agent_id"
+    
+    assert "msg" in error
+    assert "Invalid agent ID format" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_delete_agent_success():
     """Test successful agent deletion"""
@@ -141,15 +156,29 @@ def test_delete_agent_validation_error():
     """Test validation error handling during deletion"""
     agent_id = "invalid-id"
     
-    with patch("api.routes.agents.delete_agent") as mock_delete:
-        mock_delete.side_effect = ValueError("Invalid agent ID format")
-        
-        response = client.delete(f"/agents/{agent_id}")
-        
-        assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
-        
-        mock_delete.assert_called_once_with(agent_id)
+    response = client.delete(f"/agents/{agent_id}")
+    
+    assert response.status_code == 422
+    
+    response_json = response.json()
+
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 2
+    assert error["loc"][0] == "path"
+    assert error["loc"][1] == "agent_id"
+    
+    assert "msg" in error
+    assert "Invalid agent ID format" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 class TestAgentQueriesRoute:
     @pytest.fixture
@@ -252,23 +281,63 @@ class TestAgentQueriesRoute:
         assert response.status_code == 201
         assert response.json() == {"role": "assistant", "content": "No response generated."}
     
-    @patch("api.routes.agents.get_agent") 
-    @patch("api.routes.agents.update_agent_messages") 
-    @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
-        """Test handling of validation errors"""
-        mock_agent = MagicMock()
-        mock_agent._id = "507f1f77bcf86cd799439011"
-        mock_agent.name = "Test Agent"
-        mock_get_agent.return_value = mock_agent
+    def test_send_message_missing_required_fields(self):
+        """Test handling of invalid body JSON"""
+        agent_id = "507f1f77bcf86cd799439011"
+        response = client.post(
+            f"/agents/{agent_id}/queries", 
+            json={
+                "message1": "What's the name of Gundam's pilot?"
+            }
+        )
         
-        mock_update_messages.return_value = mock_agent
-        mock_research.side_effect = ValueError("Invalid message format")
+        assert response.status_code == 422
         
-        agent_id = str(ObjectId())
+        response_json = response.json()
+
+        assert "detail" in response_json
+        assert isinstance(response_json["detail"], list)
+        assert len(response_json["detail"]) > 0
+        
+        error = response_json["detail"][0]
+        
+        assert "loc" in error
+        assert isinstance(error["loc"], list)
+        assert len(error["loc"]) == 2
+        assert error["loc"][0] == "body"
+        assert error["loc"][1] == "message"
+        
+        assert "msg" in error
+        assert "Field required" in error["msg"]
+        
+        assert "type" in error
+        assert "missing" in error["type"]
+        
+    def test_send_message_invalid_agent_id(self):
+        """Test handling of invalid agent ID"""
+        agent_id = "invalid-id"
         message = {"message": "What is climate change?"}
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)
         
         assert response.status_code == 422
-        assert "Validation error" in response.json()["detail"]
+        
+        response_json = response.json()
+
+        assert "detail" in response_json
+        assert isinstance(response_json["detail"], list)
+        assert len(response_json["detail"]) > 0
+        
+        error = response_json["detail"][0]
+        
+        assert "loc" in error
+        assert isinstance(error["loc"], list)
+        assert len(error["loc"]) == 2
+        assert error["loc"][0] == "path"
+        assert error["loc"][1] == "agent_id"
+        
+        assert "msg" in error
+        assert "Invalid agent ID format" in error["msg"]
+        
+        assert "type" in error
+        assert "value_error" in error["type"]
