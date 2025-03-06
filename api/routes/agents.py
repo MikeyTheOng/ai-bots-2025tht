@@ -191,7 +191,7 @@ async def update_agent_websites_route(
         
         await update_agent_websites(agent_id, website_files) 
     except ValueError as e:
-        raise handle_validation_error(e, location=location)
+        raise handle_validation_error(e)
     except HTTPException:
         raise
     except Exception as e:
