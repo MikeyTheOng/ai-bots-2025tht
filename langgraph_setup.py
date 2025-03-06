@@ -2,26 +2,18 @@ from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import BaseMessage
 from llm_setup import LLMSetup
 from tool_setup import ToolSetup
+import os
 
 class LangGraphSetup:
     def __init__(self, llm_setup=None, tool_setup=None):
         self.llm_setup = llm_setup if llm_setup else LLMSetup()
         self.tool_setup = tool_setup if tool_setup else ToolSetup()
         
-        self.system_prompt = """You are a research assistant that helps users generate research reports.
-
-        You MUST provide URL citations to back up your claims.
-        If you are unsure, do not include it in the response.
-        After each claim or piece of information, include the source URL in square brackets: [URL].
-
-        Your final response MUST follow this structure:
-        1. **Summary**: A clear, concise summary of your findings
-        2. **Detailed Information**: Organized in paragraphs or bullet points with proper formatting
-        3. Each claim must end with a citation to its source [URL]
-        4. **References**: At the end of your response, include a "References" section with a numbered list of all URLs used
-
-        Make sure your answers properly cite information from PubMed, Arxiv, Wikipedia, or web search results.
-        """
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        system_prompt_path = os.path.join(script_dir, 'system_prompt.txt')
+        
+        with open(system_prompt_path, 'r') as file:
+            self.system_prompt = file.read()
         
         self.graph = create_react_agent(
             self.llm_setup.get_model(), 
