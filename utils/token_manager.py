@@ -1,7 +1,6 @@
 from typing import Tuple
 import tiktoken
 
-
 class TokenManager:
     """
     A class to manage token counting and token limits for large language models.
