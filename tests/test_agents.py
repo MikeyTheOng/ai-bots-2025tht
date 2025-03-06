@@ -43,9 +43,25 @@ def test_create_agent_invalid_json():
         "/agents",
         data={"agent_post": "{invalid json}"}
     )
+    response_json = response.json()
     
     assert response.status_code == 422
-    assert "Invalid JSON" in response.json()["detail"]
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 1
+    assert error["loc"][0] == "input"
+    
+    assert "msg" in error
+    assert DefaultErrorMessages.INVALID_JSON_FORMAT in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_create_agent_missing_required_fields():
     """Test handling of missing required fields"""
@@ -54,9 +70,25 @@ def test_create_agent_missing_required_fields():
         "/agents",
         data={"agent_post": "{}"}
     )
+    response_json = response.json()
     
     assert response.status_code == 422
-    assert "Invalid agent data" in response.json()["detail"]
+    assert response.status_code == 422
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) > 0
+    
+    assert "msg" in error
+    assert "Field required" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_create_agent_database_error():
     """Test handling of database errors"""
@@ -119,7 +151,7 @@ def test_get_agent_validation_error():
     assert response.status_code == 422
     
     response_json = response.json()
-    print("response_json: ", response_json)
+
     assert "detail" in response_json
     assert isinstance(response_json["detail"], list)
     assert len(response_json["detail"]) > 0
