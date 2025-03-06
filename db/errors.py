@@ -1,3 +1,5 @@
+from api.routes.utils import DefaultErrorMessages
+
 class InvalidObjectIdError(ValueError):
     """Custom exception for invalid object IDs."""
     def __init__(self, object_id=None, message=None, location=None):
@@ -10,7 +12,7 @@ class InvalidAgentIDError(InvalidObjectIdError):
     """Custom exception for invalid agent IDs."""
     def __init__(self, agent_id=None, message=None, location=None):
         default_location = location or ["input", "agent_id"]
-        default_message = f"Invalid agent ID format: {agent_id}" if agent_id else "Invalid agent ID format"
+        default_message = f"{DefaultErrorMessages.INVALID_AGENT_ID}: {agent_id}" if agent_id else DefaultErrorMessages.INVALID_AGENT_ID
         super().__init__(
             object_id=agent_id, 
             message=message or default_message,

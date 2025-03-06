@@ -11,7 +11,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if (parent_dir not in sys.path):
     sys.path.append(parent_dir)
 
-from db.errors import InvalidAgentIDError
+from api.routes.utils import DefaultErrorMessages
 from main import app
 
 client = TestClient(app)
@@ -43,9 +43,25 @@ def test_create_agent_invalid_json():
         "/agents",
         data={"agent_post": "{invalid json}"}
     )
+    response_json = response.json()
     
     assert response.status_code == 422
-    assert "Invalid JSON" in response.json()["detail"]
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+    
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) == 1
+    assert error["loc"][0] == "input"
+    
+    assert "msg" in error
+    assert DefaultErrorMessages.INVALID_JSON_FORMAT in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_create_agent_missing_required_fields():
     """Test handling of missing required fields"""
@@ -54,9 +70,25 @@ def test_create_agent_missing_required_fields():
         "/agents",
         data={"agent_post": "{}"}
     )
+    response_json = response.json()
     
     assert response.status_code == 422
-    assert "Invalid agent data" in response.json()["detail"]
+    assert response.status_code == 422
+    assert "detail" in response_json
+    assert isinstance(response_json["detail"], list)
+    assert len(response_json["detail"]) > 0
+    
+    error = response_json["detail"][0]
+
+    assert "loc" in error
+    assert isinstance(error["loc"], list)
+    assert len(error["loc"]) > 0
+    
+    assert "msg" in error
+    assert "Field required" in error["msg"]
+    
+    assert "type" in error
+    assert "value_error" in error["type"]
 
 def test_create_agent_database_error():
     """Test handling of database errors"""
@@ -71,7 +103,7 @@ def test_create_agent_database_error():
         )
         
         assert response.status_code == 500
-        assert "Error creating agent" in response.json()["detail"]
+        assert DefaultErrorMessages.INTERNAL_SERVER_ERROR in response.json()["detail"]
 
 def test_get_agent_success():
     """Test successful agent retrieval"""
@@ -188,12 +220,11 @@ class TestAgentQueriesRoute:
             {"role": "user", "content": "What is climate change?"},
             {"role": "assistant", "content": "Climate change refers to long-term shifts in temperatures and weather patterns. [https://example.org/climate]"}
         ]
-    
+
     @patch("api.routes.agents.get_agent")
     @patch("api.routes.agents.update_agent_messages") 
-    @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_success(self, mock_research, mock_update_messages, mock_get_agent, mock_research_results):
-        """Test successful message sending"""
+    @patch("api.routes.agents.LangGraphSetup")
+    def test_send_message_success(self, mock_langgraph_class, mock_update_messages, mock_get_agent, mock_research_results):
         agent_id = "507f1f77bcf86cd799439011"
         message = {"message": "What is climate change?"}
         
@@ -208,16 +239,15 @@ class TestAgentQueriesRoute:
         updated_agent.messages = ["What is climate change?"]
         mock_update_messages.return_value = updated_agent
         
-        mock_research.return_value = mock_research_results
+        mock_langgraph_instance = mock_langgraph_class.return_value
+        mock_langgraph_instance.research.return_value = mock_research_results
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)
         
         assert response.status_code == 201
-        
         mock_get_agent.assert_called_once_with(agent_id)
         mock_update_messages.assert_called_once_with(agent_id, "What is climate change?")
-        mock_research.assert_called_once_with("What is climate change?")
-        
+        mock_langgraph_instance.research.assert_called_once_with("What is climate change?")
         assert response.json() == mock_research_results[-1]
 
     @patch("api.routes.agents.get_agent")
@@ -237,43 +267,46 @@ class TestAgentQueriesRoute:
         mock_get_agent.assert_called_once_with(agent_id)
         mock_update_messages.assert_not_called()
     
+
     @patch("api.routes.agents.get_agent")
     @patch("api.routes.agents.update_agent_messages")
-    @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
+    @patch("api.routes.agents.LangGraphSetup")
+    def test_send_message_research_error(self, mock_langgraph_class, mock_update_messages, mock_get_agent):
         """Test handling of research errors"""
         mock_agent = MagicMock()
-        mock_agent._id = "507f1f77bcf86cd799439011"
+        mock_agent._id = ObjectId("507f1f77bcf86cd799439011")
         mock_agent.name = "Test Agent"
         mock_get_agent.return_value = mock_agent
         
         mock_update_messages.return_value = mock_agent
         
-        mock_research.side_effect = Exception("Research error")
+        mock_langgraph_instance = mock_langgraph_class.return_value
+        mock_langgraph_instance.research.side_effect = Exception("Research error")
         
-        agent_id = str(ObjectId())
+        agent_id = "507f1f77bcf86cd799439011"
         message = {"message": "What is climate change?"}
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)
         
         assert response.status_code == 500
-        assert "Error querying agent" in response.json()["detail"]
+        assert DefaultErrorMessages.INTERNAL_SERVER_ERROR in response.json()["detail"]
     
     @patch("api.routes.agents.get_agent") 
     @patch("api.routes.agents.update_agent_messages") 
-    @patch("api.routes.agents.langgraph_setup.research")
-    def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
+    @patch("api.routes.agents.LangGraphSetup")
+    def test_send_message_empty_research_results(self, mock_langgraph_class, mock_update_messages, mock_get_agent):
         """Test handling of empty research results"""
         mock_agent = MagicMock()
-        mock_agent._id = "507f1f77bcf86cd799439011"
+        mock_agent._id = ObjectId("507f1f77bcf86cd799439011")
         mock_agent.name = "Test Agent"
         mock_get_agent.return_value = mock_agent
         
         mock_update_messages.return_value = mock_agent
 
-        mock_research.return_value = []
+        mock_langgraph_instance = mock_langgraph_class.return_value
+        mock_langgraph_instance.research.return_value = []
         
-        agent_id = str(ObjectId())
+        agent_id = "507f1f77bcf86cd799439011"
         message = {"message": "What is climate change?"}
         
         response = client.post(f"/agents/{agent_id}/queries", json=message)

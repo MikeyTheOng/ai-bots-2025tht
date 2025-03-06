@@ -16,39 +16,37 @@ A backend application that manages a Research Agent designed to assist users in 
 ## Sample Output
 
 ```markdown
-Example Query: Should I invest into nvidia or apple?
+Example Query: Should I invest into Space Ong, Nvidia or Wikipedia?
 ```
 
 
-**Summary**: Both Nvidia and Apple present compelling investment opportunities, but they cater to different market dynamics. Nvidia is heavily focused on the AI sector, showing strong growth and profitability, while Apple is investing significantly in U.S. infrastructure and maintaining a robust product ecosystem despite recent challenges in iPhone sales.
+**Summary**: When considering investments in Space Ong, Nvidia, or Wikipedia, each option presents unique opportunities and risks. Space Ong is part of a rapidly growing space economy projected to reach $1.8 trillion by 2035. Nvidia has shown remarkable growth, particularly in AI, with stock prices soaring significantly in 2023. Wikipedia, however, is not a traditional investment vehicle as it operates as a non-profit organization.
 
 **Detailed Analysis**:
 
-### Nvidia Investment Outlook
-1. **Strong Financial Performance**: Nvidia has recently reported impressive earnings, doubling its profits in 2024, largely driven by the demand for AI technology. This growth has positioned Nvidia as a leader in the AI chip market, which is expected to continue expanding [CNN](https://www.msn.com/en-us/money/other/nvidia-doubled-profits-in-2024-and-its-outlook-is-rosy-despite-ai-jitters/ar-AA1zRkP2).
+### Space Ong
+Space Ong is projected to be part of a burgeoning space economy, which is expected to grow to $1.8 trillion by 2035, driven by advancements in space-enabled technologies and applications [1][2]. The investment landscape in the space sector is becoming increasingly attractive, with significant private equity investments and a variety of space-focused ETFs available for investors [3][4]. However, specific details about Space Ong's financial health or market position are not widely available, making it essential to conduct further research on the company's fundamentals before investing.
 
-2. **Market Position and Growth Potential**: The company has seen its stock price triple since October 2023, reflecting optimism in the AI sector. However, there are concerns about competition, particularly from new entrants like the Chinese startup DeepSeek, which could impact Nvidia's market dominance [InvestmentNews](https://www.investmentnews.com/industry-news/why-options-traders-are-cautious-about-nvidia-earnings-this-week/259426).
+### Nvidia
+Nvidia has emerged as a leading player in the tech industry, particularly in the fields of artificial intelligence and graphics processing units (GPUs). The company's stock has seen a remarkable increase, with a reported 239% rise in 2023 alone [5][6]. Analysts are optimistic about Nvidia's future, with some suggesting that the stock could potentially increase tenfold due to new growth vectors in AI and other technologies [7]. This strong performance and growth potential make Nvidia a compelling investment option, especially for those interested in technology and AI sectors.
 
-3. **Investment Sentiment**: Analysts suggest that despite some volatility, Nvidia remains a strong buy due to its pivotal role in the AI revolution and the growing demand for its products [The Motley Fool](https://www.fool.com/investing/2025/02/19/2-reasons-buy-nvidia-stock-wake-deepseek/).
-
-### Apple Investment Outlook
-1. **Significant U.S. Investment**: Apple has announced plans to invest over $500 billion in the U.S. over the next four years, which includes building new facilities and creating jobs. This move is seen as a strategic effort to bolster its domestic operations and mitigate risks associated with international supply chains [Forbes](https://www.forbes.com/sites/siladityaray/2025/02/24/apple-promises-500-billion-us-investment-and-20000-jobs/).
-
-2. **Challenges in Sales**: Despite its strong brand and ecosystem, Apple faced a decline in iPhone sales in 2023. Analysts are cautiously optimistic about a potential rebound, but the company must navigate market saturation and competition in the smartphone sector [TheStreet.com](https://www.thestreet.com/apple/stock/apple-stock-outlook-2024-challenges-and-trends).
-
-3. **Long-term Growth Strategy**: Apple's investment strategy is aimed at sustaining its growth trajectory and enhancing its competitive edge, particularly in the face of economic uncertainties and evolving consumer preferences [USA Today](https://www.usatoday.com/story/money/investing/2025/02/06/apple-725-billion-investment/78015792007/).
+### Wikipedia
+Wikipedia operates as a non-profit organization and does not offer traditional investment opportunities. It relies on donations and grants to fund its operations and maintain its platform. While it is a valuable resource and has a significant impact on information dissemination, it does not generate profits or provide returns on investment in the conventional sense [8]. Therefore, investing in Wikipedia is not feasible in the same way as investing in a for-profit company like Space Ong or Nvidia.
 
 **Key Insights**:
-- **Nvidia** is positioned for growth in the AI sector, with strong financial results and a leading market position, but faces competitive threats.
-- **Apple** is making substantial investments in the U.S. to strengthen its operations, although it is currently dealing with challenges in iPhone sales.
+- **Space Ong**: Potentially high growth in a booming sector, but requires more specific financial data for informed investment.
+- **Nvidia**: Strong growth and market position in AI and technology, making it a promising investment.
+- **Wikipedia**: Not a viable investment option as it operates as a non-profit.
 
 **References**:
-1. [CNN - Nvidia doubled profits in 2024](https://www.msn.com/en-us/money/other/nvidia-doubled-profits-in-2024-and-its-outlook-is-rosy-despite-ai-jitters/ar-AA1zRkP2)
-2. [The Motley Fool - 2 Reasons to Buy Nvidia Stock](https://www.fool.com/investing/2025/02/19/2-reasons-buy-nvidia-stock-wake-deepseek/)
-3. [InvestmentNews - Why options traders are cautious about Nvidia](https://www.investmentnews.com/industry-news/why-options-traders-are-cautious-about-nvidia-earnings-this-week/259426)
-4. [Forbes - Apple Promises $500 Billion U.S. Investment](https://www.forbes.com/sites/siladityaray/2025/02/24/apple-promises-500-billion-us-investment-and-20000-jobs/)
-5. [TheStreet.com - Apple Stock Outlook 2024](https://www.thestreet.com/apple/stock/apple-stock-outlook-2024-challenges-and-trends)
-6. [USA Today - Apple's $725 billion investment](https://www.usatoday.com/story/money/investing/2025/02/06/apple-725-billion-investment/78015792007/)
+1. [How to invest in the space industry: A beginner's guide](https://www.bankrate.com/investing/how-to-invest-in-space/)
+2. [Space is booming. Here's how to embrace the $1.8 trillion opportunity](https://www.weforum.org/stories/2024/04/space-economy-technology-invest-rocket-opportunity/)
+3. [5 Space Stocks to Watch in 2025 and Beyond - The Motley Fool](https://www.fool.com/investing/stock-market/market-sectors/industrials/space-stocks/)
+4. [Space Capital | Insights | Investing in the Space Economy](https://www.spacecapital.com/publications/investing-in-the-space-economy)
+5. [Where Will Nvidia Stock Be In 5 Years? - Forbes](https://www.forbes.com/sites/investor-hub/article/where-will-nvidia-nvda-stock-be-5-years/)
+6. [Nvidia Stock Soared 239% in 2023, and 1 Wall Street Analyst Says It ...](https://www.fool.com/investing/2024/03/20/nvidia-stock-soared-239-in-2023-and-1-wall-street/)
+7. [Nvidia Stock Could Rise 10-Fold On New $10 Billion Growth Vector - Forbes](https://www.forbes.com/sites/petercohan/2024/06/09/nvidia-stock-could-rise-10-fold-on-new-10-billion-growth-vector/)
+8. [Investment - Wikipedia](https://en.wikipedia.org/wiki/Investment)
 
 
 
