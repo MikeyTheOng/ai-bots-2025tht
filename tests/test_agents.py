@@ -193,6 +193,23 @@ class TestAgentQueriesRoute:
 
     @patch("api.routes.agents.get_agent")
     @patch("api.routes.agents.update_agent_messages")
+    def test_agent_not_found(self, mock_update_messages, mock_get_agent):
+        """Test handling when agent is not found"""
+        mock_get_agent.return_value = None
+        
+        agent_id = "nonexistent_id"
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 201
+        assert response.json() == {"role": "system", "content": "Agent not found."}
+        
+        mock_get_agent.assert_called_once_with(agent_id)
+        mock_update_messages.assert_not_called()
+    
+    @patch("api.routes.agents.get_agent")
+    @patch("api.routes.agents.update_agent_messages")
     @patch("api.routes.agents.langgraph_setup.research")
     def test_send_message_research_error(self, mock_research, mock_update_messages, mock_get_agent):
         """Test handling of research errors"""
