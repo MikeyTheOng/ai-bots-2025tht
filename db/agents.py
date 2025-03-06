@@ -1,5 +1,4 @@
 from bson.objectid import ObjectId
-from fastapi import HTTPException
 from models.agents import AgentDB, CreateAgent
 from db.errors import InvalidAgentIDError
 
@@ -18,8 +17,8 @@ async def create_agent(new_agent: CreateAgent):
         await new_agent.insert()
         
         return new_agent
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error creating agent: {str(e)}")
+    except:
+        raise
     
 async def get_agent(agent_id: str):
     """
@@ -72,7 +71,7 @@ async def update_agent_messages(agent_id: str, message: str):
     """
     try:
         if not ObjectId.is_valid(agent_id):
-            raise HTTPException(status_code=422, detail="Invalid agent ID format")
+            raise InvalidAgentIDError(agent_id, location=["path", "agent_id"])
         
         agent = await AgentDB.get(agent_id)
         
@@ -81,7 +80,5 @@ async def update_agent_messages(agent_id: str, message: str):
         await agent.save()
         
         return agent
-    except HTTPException:
+    except:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error updating agent messages: {str(e)}")
