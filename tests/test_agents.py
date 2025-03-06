@@ -313,3 +313,31 @@ class TestAgentQueriesRoute:
         assert "type" in error
         assert "missing" in error["type"]
         
+    def test_send_message_invalid_agent_id(self):
+        """Test handling of invalid agent ID"""
+        agent_id = "invalid-id"
+        message = {"message": "What is climate change?"}
+        
+        response = client.post(f"/agents/{agent_id}/queries", json=message)
+        
+        assert response.status_code == 422
+        
+        response_json = response.json()
+
+        assert "detail" in response_json
+        assert isinstance(response_json["detail"], list)
+        assert len(response_json["detail"]) > 0
+        
+        error = response_json["detail"][0]
+        
+        assert "loc" in error
+        assert isinstance(error["loc"], list)
+        assert len(error["loc"]) == 2
+        assert error["loc"][0] == "path"
+        assert error["loc"][1] == "agent_id"
+        
+        assert "msg" in error
+        assert "Invalid agent ID format" in error["msg"]
+        
+        assert "type" in error
+        assert "value_error" in error["type"]
