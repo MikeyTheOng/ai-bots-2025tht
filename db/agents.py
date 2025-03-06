@@ -32,7 +32,7 @@ async def get_agent(agent_id: str):
     """
     try:
         if not ObjectId.is_valid(agent_id):
-            raise InvalidAgentIDError(agent_id, location=["path", "agent_id"])
+            raise InvalidAgentIDError(agent_id)
         agent = await AgentDB.get(agent_id)
         return agent
     except:
@@ -50,7 +50,7 @@ async def delete_agent(agent_id: str):
     """
     try:
         if not ObjectId.is_valid(agent_id):
-            raise InvalidAgentIDError(agent_id, location=["path", "agent_id"])
+            raise InvalidAgentIDError(agent_id)
         agent = await AgentDB.get(agent_id)
         if not agent:
             return None
@@ -71,7 +71,7 @@ async def update_agent_messages(agent_id: str, message: str):
     """
     try:
         if not ObjectId.is_valid(agent_id):
-            raise InvalidAgentIDError(agent_id, location=["path", "agent_id"])
+            raise InvalidAgentIDError(agent_id)
         
         agent = await AgentDB.get(agent_id)
         

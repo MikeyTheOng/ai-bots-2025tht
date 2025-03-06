@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form, HTTPException
 from api.routes.utils import handle_validation_error
 import json
-from db.agents import create_agent, delete_agent, get_agent, update_agent_messages, InvalidAgentIDError
+from db.agents import create_agent, delete_agent, get_agent, update_agent_messages
 from langgraph_setup import LangGraphSetup
 from llm_setup import LLMSetup
 from models.agents import AgentDB, CreateAgent
@@ -59,7 +59,7 @@ async def get_agent_route(
             return AgentDB(name="")
         return agent
     except ValueError as e:
-        raise handle_validation_error(e)
+        raise handle_validation_error(e, location=["path", "agent_id"])
     except HTTPException:
         raise
     except Exception as e:
@@ -79,7 +79,7 @@ async def delete_agent_route(
     try:
         await delete_agent(agent_id)
     except ValueError as e:
-        raise handle_validation_error(e)
+        raise handle_validation_error(e, location=["path", "agent_id"])
     except HTTPException:
         raise
     except Exception as e:
@@ -112,7 +112,7 @@ async def send_message_route(
         return messages[-1] if messages else {"role": "assistant", "content": "No response generated."}
         
     except ValueError as e:
-        raise handle_validation_error(e)
+        raise handle_validation_error(e, location=["path", "agent_id"])
     except HTTPException:
         raise
     except Exception as e:

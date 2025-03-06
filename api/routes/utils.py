@@ -1,8 +1,7 @@
 from fastapi import HTTPException
 
-def handle_validation_error(error):
+def handle_validation_error(error, location=["input"]):
     """Convert a ValueError to a structured HTTPException"""
-    location = error.location if hasattr(error, "location") else ["input"]
     return HTTPException(
         status_code=422,
         detail=[{
